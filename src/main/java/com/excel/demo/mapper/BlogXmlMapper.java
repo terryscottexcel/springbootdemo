@@ -22,7 +22,7 @@ public interface BlogXmlMapper {
 	 * @return
 	 * @throws Exception
 	 */
-	public int updateBlog(Blog blog, int id) throws Exception;
+	public int updateBlog(Blog blog) throws Exception;
 
 	/**
 	 * 刪除博客

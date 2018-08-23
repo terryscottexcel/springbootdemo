@@ -2,6 +2,8 @@ package com.excel.demo.controller;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,7 @@ public class MybatisXmlController {
 	UserInfoMapper userMapper;
 	
 	@Autowired
-	private BlogService service;
+	private BlogService blogServiceImpl;
 
 	@RequestMapping("/boot/listblog")
 	public List<Blog> listAllBlog() {
@@ -45,7 +47,7 @@ public class MybatisXmlController {
 	public List<Blog> listAllBlog2() {
 		List<Blog> list = null;
 		try {
-			list = service.queryBlogByParam(null);
+			list = blogServiceImpl.queryBlogByParam(null);
 			for (Blog blog : list) {
 				logger.info(blog.toString());
 			}
@@ -53,6 +55,20 @@ public class MybatisXmlController {
 			e.printStackTrace();
 		}
 		return list;
+	}
+	
+	@RequestMapping("/boot/updateblog2")
+	public String updateBlog2() {
+		String msg = "update successfully";
+		try {
+			blogServiceImpl.updateBlog();
+			logger.info(msg);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+			msg = "update failed:"+e.getMessage();
+		}
+		return msg;
 	}
 
 	@RequestMapping("/boot/demoblog")
