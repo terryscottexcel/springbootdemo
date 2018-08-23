@@ -2,6 +2,8 @@ package com.excel.demo.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,22 +13,42 @@ import com.excel.demo.bean.Blog;
 import com.excel.demo.bean.UserInfo;
 import com.excel.demo.mapper.BlogXmlMapper;
 import com.excel.demo.mapper.UserInfoMapper;
+import com.excel.demo.service.BlogService;
 
 @RestController
 public class MybatisXmlController {
-
+	private static final Logger logger = LoggerFactory.getLogger(MybatisXmlController.class);
 	@Autowired
 	private BlogXmlMapper mapper;
 	
 	@Autowired
 	UserInfoMapper userMapper;
+	
+	@Autowired
+	private BlogService service;
 
 	@RequestMapping("/boot/listblog")
 	public List<Blog> listAllBlog() {
 		List<Blog> list = null;
 		try {
 			list = mapper.selectAllBlog();
-			System.out.println(list);
+			for (Blog blog : list) {
+				logger.info(blog.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	@RequestMapping("/boot/listblog2")
+	public List<Blog> listAllBlog2() {
+		List<Blog> list = null;
+		try {
+			list = service.queryBlogByParam(null);
+			for (Blog blog : list) {
+				logger.info(blog.toString());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -38,7 +60,10 @@ public class MybatisXmlController {
 		String msg = "insert successfully";
 		try {
 			Integer id = mapper.selectMaxId();
-			System.out.println("the max id = " + id);
+			logger.info("the max id = {}", id);
+			if(id==null) {
+				id=1;
+			}
 			for (int i = id; i < id + 100; i++) {
 				Blog blog = new Blog();
 				blog.setCode("B" + i);
@@ -48,7 +73,9 @@ public class MybatisXmlController {
 			}
 			List<Blog> list = null;
 			list = mapper.selectAllBlog();
-			System.out.println(list);
+			for (Blog blog : list) {
+				logger.info(blog.toString());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			msg = "insert failed";
@@ -63,7 +90,7 @@ public class MybatisXmlController {
 		Blog blog = null;
 		try {
 			blog = mapper.selectBlogById(id);
-			System.out.println(blog);
+			logger.info(blog.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -76,7 +103,8 @@ public class MybatisXmlController {
 		String msg = "delete successfully";
 		try {
 			int cnt = mapper.deleteBlog(id);
-			System.out.println(cnt+" records are "+msg);
+			
+			logger.info("{} records are {}",cnt, msg);
 		} catch (Exception e) {
 			e.printStackTrace();
 			msg = "delete failed";
@@ -89,7 +117,9 @@ public class MybatisXmlController {
 		List<UserInfo> list = null;
 		try {
 			list = userMapper.selectAll();
-			System.out.println(list);
+			for (UserInfo user : list) {
+				logger.info(user.toString());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

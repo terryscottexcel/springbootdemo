@@ -1,4 +1,4 @@
-package com.excel.springbootdemo;
+package com.excel.demo;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

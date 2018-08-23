@@ -56,5 +56,5 @@ public interface BlogXmlMapper {
 	 * @return 
 	 * @throws Exception
 	 */
-	public int selectMaxId() throws Exception;
+	public Integer selectMaxId() throws Exception;
 }

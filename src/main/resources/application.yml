@@ -3,4 +3,7 @@
 #yml文件也可以用yaml做后缀名
 server:
     port: 8083
-    context-path: /webdemo1
+    #Property 'server.context-path' is Deprecated: Use 'server.servlet.context-path' instead.
+    #context-path: /webdemo1
+    servlet.context-path: /bootweb
+    
