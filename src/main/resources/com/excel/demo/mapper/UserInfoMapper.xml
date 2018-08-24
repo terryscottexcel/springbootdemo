@@ -60,4 +60,8 @@
     select id, user_code, user_name, birthday
     from t_userinfo
   </select>
+  
+  <select id="selectMaxId" resultType="int">
+     select max(id) maxid from t_userinfo
+    </select>
 </mapper>

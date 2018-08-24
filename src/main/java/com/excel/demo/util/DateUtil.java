@@ -20,6 +20,12 @@ public class DateUtil {
 	}
 	
 	public static Date convertToUtilDate(String datestr) {
+		if(datestr.indexOf('-')!=-1) {
+			datestr = datestr.replace('-', '/');
+		}
+		else if(datestr.indexOf('.')!=-1) {
+			datestr = datestr.replace('.', '/');
+		}
 		return convertToUtilDateByFormat(datestr,PATTER_DATE);
 	}
 	
@@ -54,5 +60,12 @@ public class DateUtil {
 		datestr = sdf.format(utildate);
 		
 		return datestr;
+	}
+	
+	public static void main(String[] args) {
+		String datestr = "1985.06.26";
+		Date date = convertToUtilDate(datestr);
+		System.out.println(date);
+		
 	}
 }
