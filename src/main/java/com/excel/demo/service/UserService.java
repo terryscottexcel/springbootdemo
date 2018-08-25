@@ -8,4 +8,5 @@ public interface UserService {
 	public UserInfo listUserInfoById(Integer id);
 	public void insertUserInfo(UserInfo user);
 	public List<UserInfo> listUserInfoByName(String userName);
+	public List<UserInfo> listUserInfo();
 }

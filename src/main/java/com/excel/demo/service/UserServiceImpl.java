@@ -77,6 +77,47 @@ public class UserServiceImpl implements UserService {
 		}
 		return userListRst;
 	}
+	
+	@Override
+	public /*synchronized*/ List<UserInfo> listUserInfo() {
+		
+		Integer dbmaxId = userMapper.selectMaxId();
+		Integer maxId = (Integer) redisTemplate.opsForValue().get("maxIdVal");
+		if(maxId==null) {
+			maxId = 0;
+		}
+		boolean fromdb = false;
+		if(dbmaxId > maxId) {
+			fromdb = true;
+		}
+		
+		//在高并发情况下，此处有些问题，比如10000人查询，每人刚进来，缓存肯定是没有数据的，就会查数据库，导致查10000次，效率很低
+		//应该让第1个人查数据库，剩下的人就都可以从缓存里取了。
+		//可以设置该方法是同步方法,加synchronized修饰即可。这样每次只有一个线程可以执行该方法，这样第二个线程进来时候就发现缓存有数据，从而不去数据库查了.
+		//方法上加锁，会有牺牲效率，大部分线程都在等待，导致效率低下。另外的方法，则是在需要查数据库的地方进行加锁，这样效率会高一点
+		
+		//查询缓存
+		List<UserInfo> alluserList = (List<UserInfo>) redisTemplate.opsForValue().get("allUserInfos");
+		//缓存无数据才进入加锁的代码
+		if(null == alluserList) {
+			//锁一下自己的对象，可以让并发线程在执行到这里时等待一下
+			synchronized(this) {
+				//再查一次缓存，看是否有数据
+				alluserList = (List<UserInfo>) redisTemplate.opsForValue().get("allUserInfos");
+				
+				//如果缓存里的数据为空，则查一次数据库
+				if(null == alluserList || alluserList.isEmpty() || fromdb) {
+					logger.info("从数据库读取");
+					alluserList = userMapper.selectAll();
+					//放入缓存中
+					redisTemplate.opsForValue().set("allUserInfos",alluserList);
+					redisTemplate.opsForValue().set("maxIdVal",dbmaxId);
+				}
+			}
+		}
+		
+		return alluserList;
+	}
 
 	@Override
 	public void insertUserInfo(UserInfo user) {

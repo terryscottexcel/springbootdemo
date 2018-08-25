@@ -1,6 +1,8 @@
 package com.excel.demo.controller;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +46,7 @@ public class RedisController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error(e.getMessage());
 			msg = "insert failed";
 		}
 		return msg;
@@ -52,9 +55,34 @@ public class RedisController {
 	
 	@GetMapping("/boot/redis/listuser")
 	public List<UserInfo> listUser() {
-		List<UserInfo> list = userServiceImpl.listUserInfoByName("U");
+		List<UserInfo> list = userServiceImpl.listUserInfo();
 		
-		System.out.println(list);
+		
+		return list;
+	}
+	
+	@GetMapping("/boot/redis/listusertest")
+	public List<UserInfo> listUserTest() {
+		//创建线程对象，让线程里面执行查询数据。每个线程代表一个用户的请求
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				long start = System.currentTimeMillis();
+				userServiceImpl.listUserInfo();
+				long end = System.currentTimeMillis();
+				logger.info("take times={}",(end-start));
+			}
+		};
+		
+		//多线程测试缓存穿透问题
+		ExecutorService exeSrv = Executors.newFixedThreadPool(8);
+		for (int i = 0; i < 100; i++) {
+			exeSrv.submit(runnable);
+		}
+		
+		
+		List<UserInfo> list = userServiceImpl.listUserInfo();
+		
 		return list;
 	}
 }

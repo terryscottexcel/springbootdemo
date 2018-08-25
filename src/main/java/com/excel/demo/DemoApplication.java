@@ -9,6 +9,9 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.alibaba.dubbo.spring.boot.annotation.EnableDubboConfiguration;
+
+@EnableDubboConfiguration
 @EnableCaching
 @ComponentScan("com.excel.demo")
 @MapperScan("com.excel.demo")

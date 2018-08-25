@@ -55,7 +55,7 @@
             <MaxFileSize>10MB</MaxFileSize>
         </triggeringPolicy>
 	</appender>
-	<root level="info">
+	<root level="debug">
 		<appender-ref ref="consoleLog" />
 		<appender-ref ref="fileDebugLog" />
 		<appender-ref ref="fileErrorLog" />
