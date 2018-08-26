@@ -18,4 +18,9 @@ public class JspController {
 		model.addAttribute("msg", "Hello,welcome to user data list page");
 		return "listUser";
 	}
+	
+	@RequestMapping("/")
+	public String index() {
+		return "index";
+	}
 }
